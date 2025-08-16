@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Скоро...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        #content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+
+        #text-container {
+            position: relative;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 90vw;
+            padding: 0 20px;
+            min-height: 60px;
+        }
+
+        #gif-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #gif-container img {
+            width: 66px;
+            height: 96px;
+            image-rendering: pixelated;
+        }
+
+        .char {
+            display: inline-block;
+            opacity: 0;
+            animation: 
+                appear 0.1s forwards,
+                wave 0.5s infinite 0.1s ease-in-out alternate;
+        }
+
+        @keyframes appear {
+            to { opacity: 1; }
+        }
+
+        @keyframes wave {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-3px); }
+        }
+    </style>
+</head>
+<body>
+    <div id="content-wrapper">
+        <div id="text-container"></div>
+        <div id="gif-container">
+            <img src="spr_player_walk_down.gif" alt="Walking character">
+        </div>
+    </div>
+
+    <script>
+        const texts = [
+            { text: "...", delay: 3000 },
+            { text: "связь... найдена?", delay: 4000 },
+            { text: "отлично...", delay: 4000 },
+            { text: "ты нашёл меня...", delay: 5000 },
+            { text: "я поведаю тебе историю...", delay: 6000 },
+            { text: "...что скоро должна произойти...", delay: 5000 },
+            { text: "эта история о ребёнке... что по ошибке попал не туда...", delay: 7000, showGif: true },
+            { text: "ТЫ... должен будешь его провести домой...", delay: 5000 },
+            { text: "скоро встретимся, путник", delay: 3000, hideGif: true }
+        ];
+
+        const textContainer = document.getElementById('text-container');
+        const gifContainer = document.getElementById('gif-container');
+        let currentIndex = 0;
+
+        function displayText(textObj) {
+            textContainer.innerHTML = '';
+            textContainer.style.whiteSpace = 'nowrap';
+            
+            const chars = textObj.text.split('');
+            const totalDelay = chars.length * 50 + textObj.delay;
+            
+            chars.forEach((char, i) => {
+                const span = document.createElement('span');
+                span.className = 'char';
+                span.textContent = char === ' ' ? '\u00A0' : char;
+                span.style.animationDelay = `${i * 0.05}s, ${i * 0.05 + 0.1}s`;
+                textContainer.appendChild(span);
+            });
+
+            if (textObj.showGif) {
+                gifContainer.style.display = 'block';
+            }
+            if (textObj.hideGif) {
+                gifContainer.style.display = 'none';
+            }
+
+            currentIndex++;
+            if (currentIndex < texts.length) {
+                setTimeout(() => displayText(texts[currentIndex]), totalDelay);
+            } else {
+                setTimeout(() => window.close(), totalDelay);
+            }
+        }
+
+        // Start the sequence
+        displayText(texts[currentIndex]);
+    </script>
+</body>
+</html>
